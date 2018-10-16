@@ -6,8 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/HoloToolkit-Examples/Medical/Scenes/MedicalExample.unity
-    guid: fa700b7899107cf45a4fd5d162feb39c
+    path: Assets/Scenes/SampleScene.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/Rogo Digital/LipSync Lite/Examples/Example_04_Lincoln_Advanced.unity
+    guid: 2e29cde9a3700a44594dc3ad7e78206b
   - enabled: 1
-    path: Assets/HoloToolkit-Examples/SpatialMapping/Scenes/TapToPlace.unity
-    guid: 6b75bb485379146429e95e2a402d8129
+    path: Assets/Rogo Digital/LipSync Lite/Examples/Example_01_Lincoln.unity
+    guid: b9afcba6dd3a8e34793fcc5eb9cb1202
+  m_configObjects: {}

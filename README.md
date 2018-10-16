@@ -1,3 +1,5 @@
+THIS IS THE HOLOTOOLKIT API README, BUT I DIDN'T DELETE IT BECAUSE WE HAVE NOTHING BETTER TO PUT HERE
+
 <img src="External/ReadMeImages/MRTK_Logo_Rev.png">
 
 # What is MixedRealityToolkit-Unity?
