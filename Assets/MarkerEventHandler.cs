@@ -74,7 +74,7 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
                  newStatus == TrackableBehaviour.Status.NO_POSE)
         {
             
-            OnTrackingLost();
+            //OnTrackingLost();
         }
         else
         {
@@ -82,7 +82,7 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
             // Vuforia is starting, but tracking has not been lost or found yet
             // Call OnTrackingLost() to hide the augmentations
             //output.text="nothing " + mTrackableBehaviour.TrackableName + " lost";
-            OnTrackingLost();
+            //OnTrackingLost();
         }
     }
 
@@ -111,7 +111,7 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
         //ask controller to register this marker
         myController.updateMarkerTrackedStated(mTrackableBehaviour.TrackableName);
 
-        
+
         // Enable rendering:
         foreach (var component in rendererComponents)
             component.enabled = true;
