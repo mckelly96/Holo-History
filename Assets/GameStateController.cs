@@ -9,8 +9,10 @@ public class GameStateController : MonoBehaviour {
 	enum possibleGameStatesRelatedToAnna{Introduce_Anna, Anna_talks_about_A, Anna_talks_about_B, Outro}; //things like marker calibration and entering/exiting room are not included
 	//because they aren't really part of the game right now...they are mostly workarounds
 
-	possibleGameStatesRelatedToAnna currentGameState=possibleGameStatesRelatedToAnna.Introduce_Anna;
+	possibleGameStatesRelatedToAnna currentGameState=AnnaEnumHelpers.GetEnumObjectByValue<possibleGameStatesRelatedToAnna>(0);
 	public List<AudioClip> audioClipsCorrespondingToEachOfAnnasStates; //this array should have the same length as possibleGameStatesRelatedToAnna. 
+
+	public AudioSource annasAudioSource; //reference to the clip attached to the lipsync character itself
 	//set these clips somewhere (maybe in C#? or don't use an array and just have a couple of variable as public AudioClip clip1,clip2,...., which is bad style but would work)
 	//some other more general solution would need
 	//to be implemented for more than 1 actor (eg. each actor should have an array like this and the controller will tell them all to activate. timing would be an issue)
@@ -31,6 +33,9 @@ public class GameStateController : MonoBehaviour {
 	bool waitingForUserToEnterRoom=true; //this will be set to true whenever Anna finishes her speech and then the user leaves the room. 
 	//this should never be true at the same time as waitingForUserToLeaveRoom (they are both false while anna is talking)
 	//if the user enters the room without looking at the marker, then NOTHING should happen. they MUST look at the marker to start the next part
+
+
+	bool currentlyPlayingAClip=false;
 	
 	// Use this for initialization
 	void Start () {
@@ -50,7 +55,53 @@ public class GameStateController : MonoBehaviour {
 			//assume markers are positioned and handle game states.
 			//************STATE FLOW************** */  START>>>>>>wait for user to enter room>anna state 0>wait for exit room>wait for enter room>anna state 1>....
 			//only check for markers AFTER she's done talking (check in the audioclip (isPlaying) for the character)
-
+			//DON'T TRY TO HANDLE EVERYTHING IN 1 FRAME. change state, then the new state will be handled in the NEXT frame
+			if (currentlyPlayingAClip){
+				if (!annasAudioSource.isPlaying){
+					currentlyPlayingAClip=false;
+					waitingForUserToLeaveRoom=true;
+				}
+				else{
+					//do nothing, anna is talking
+				}
+			}
+			else{
+				if (waitingForUserToEnterRoom){
+					//calculate angle to marker outside room
+					float angle=0; //implement
+					if (angle<15){ //threshold of 15 degrees for now
+						waitingForUserToEnterRoom=false;
+					}
+					else{
+						//do nothing; user must look at marker
+					}
+				}
+				else if (waitingForUserToLeaveRoom){ //safe to use else if because waitingForUserToEnterRoom and waitingForUserToLeaveRoom should never both be true
+					//calculate angle to marker inside room
+					float angle=0; //implement
+					if (angle<15){ //threshold of 15 degrees for now
+						waitingForUserToLeaveRoom=false;
+						waitingForUserToEnterRoom=true;
+					}
+					else{
+						//do nothing; user must look at marker
+					}
+				}
+				else{ //means user entered room and we can start
+					if ((int)currentGameState<Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length){
+						//start the next sequence
+						currentGameState=AnnaEnumHelpers.GetEnumObjectByValue<possibleGameStatesRelatedToAnna>((int)currentGameState+1);
+						//check if they are looking at the marker INSIDE the room
+						AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState],new Vector3(0,0,0));//the vector will need to be changed so it plays at the
+						//character's mouth
+						currentlyPlayingAClip=true;
+					}
+					else{
+						//end of game
+					}
+					
+				}
+			}
 			//marker "tracking" will need to be simulated since we can't use vuforia AND do screen mirroring on the hololens.
 			//we can use 3D angle calculations to determine if the user is more or less looking at the virtual marker; (cos(THETA)=(a dot b)/(|a|*|b|), with a = forward vector of camera
 			//and b as the vector from camera location to a marker.
@@ -75,4 +126,13 @@ public class GameStateController : MonoBehaviour {
 		}
 
 	}
+	//borrowed from https://stackoverflow.com/questions/16464219/how-to-get-enum-object-by-value-in-c
+	public static class AnnaEnumHelpers {
+
+		public static T GetEnumObjectByValue<T>(int valueId) {
+			return (T) Enum.ToObject(typeof (T), valueId);
+		}
+
+	}
 }
+

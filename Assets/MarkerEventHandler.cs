@@ -100,7 +100,7 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
         Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         output.text="Trackable " + mTrackableBehaviour.TrackableName + " found";
 
-        thisMarkerHasBeenFound=true;
+        thisMarkerHasBeenFound=true; //this would be used for a dynamic object, i guess. not really useful right now
 
         //since we now know WHERE the marker is, and it shouldn't move, then we shouldn't need to track it anymore. this won't be a fair assumption with opening doors, but we can
         //assume a static double door like in nick's lab for now.
