@@ -81,7 +81,7 @@ public class GameStateController : MonoBehaviour {
 					float angle=0; //implement
 					if (angle<15){ //threshold of 15 degrees for now
 						waitingForUserToLeaveRoom=false;
-						waitingForUserToEnterRoom=true;
+						waitingForUserToEnterRoom=true; //enter room immediately after exiting, no other state between right now. will need some fix for multiple rooms
 					}
 					else{
 						//do nothing; user must look at marker
