@@ -26,9 +26,7 @@ public class GameStateController : MonoBehaviour {
 	/********** MARKER CALIBRATION **********/
 	// Keep track of positioned markers because there's no way we can track all markers in 1 frame due to camera FOV and 
 		// because that's generally a bad assumption to make anyway
-	// TODO: Properly initialize camera object?
 	public Camera hololensLocation; // Initalize camera object
-	public int NUMBER_OF_MARKERS = 2; // Number of markers constant
 	public List<string> calibratedMarkers; // Keep track of marker names
 	public MarkerEventHandler outsideMarker, insideMarker; // Optimization for current use
 
@@ -41,7 +39,6 @@ public class GameStateController : MonoBehaviour {
 	* Consider adding an array of audio sources with length = possibleGameStatesRelatedToAnna.length so that the narrator and Anna can swap talking.
 	* This solution would not work for multiple actors in the same state
 	*/
-	// TODO: initialize this to something
 	public List<AudioClip> audioClipsCorrespondingToEachOfAnnasStates; // Same length as possibleGameStatesRelatedToAnna
 	public AudioSource annasAudioSource; //reference to the clip attached to the lipsync character itself
 
@@ -78,7 +75,7 @@ public class GameStateController : MonoBehaviour {
 		// For this functionality to start, ALL tracking should be completed and thus vuforia is no longer needed
 		// Consider having tooltips to get the user to look around for the markers...otherwise instruct them in real life
 		// Assume markers are positioned and handle game states.
-		if (calibratedMarkers.Count >= NUMBER_OF_MARKERS) {
+		if (calibratedMarkers.Count >= 2) {
 			/************ STATE FLOW ***************/
 			// START -> Wait for user to enter room -> anna state 0 -> wait for exit then enter room -> anna state 1....
 
@@ -92,18 +89,12 @@ public class GameStateController : MonoBehaviour {
 				// Else: Anna is talking
 			}
 			else{
-				// Get current vector of Hololens Camera
-				Vector3 cameraLocation = hololensLocation.gameObject.transform.position;
-
 				if(waitingForUserToEnterRoom) {
 					Debug.Log("Searching for marker to enter the room.");
 
-					// Get vector for marker
-					Vector3 markerLocation = insideMarker.gameObject.transform.position;
-
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
 					// Calculates angle between cameraLocation vector and markerLocation vector
-					float angle = Vector3.Angle(cameraLocation, markerLocation);
+					float angle = Vector3.Angle(hololensLocation.gameObject.transform.forward, insideMarker.gameObject.transform.position - hololensLocation.gameObject.transform.position);
 
 					// Use absolute value to ensure that you are looking either left or right of the markers
 					if(Math.Abs(180 - angle) < 15.0f) {
@@ -115,12 +106,9 @@ public class GameStateController : MonoBehaviour {
 				} else if(waitingForUserToLeaveRoom) {
 					Debug.Log("Searching for marker to leave the room.");
 
-					// Get vector for marker
-					Vector3 markerLocation = outsideMarker.gameObject.transform.position;
-
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
 					// Calculates angle between cameraLocation vector and markerLocation vector
-					float angle = Vector3.Angle(cameraLocation, markerLocation);
+					float angle = Vector3.Angle(hololensLocation.gameObject.transform.forward, outsideMarker.gameObject.transform.position - hololensLocation.gameObject.transform.position);
 
 					// Use absolute value to ensure that you are looking either left or right of the markers
 					if(Math.Abs(180 - angle) < 15.0f) {
@@ -132,7 +120,6 @@ public class GameStateController : MonoBehaviour {
 				} else {
 					// User entered room and we can play current state
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
-						// TODO: change vector so it plays at the character's mouth
 						AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
 
 						// Set new game state
