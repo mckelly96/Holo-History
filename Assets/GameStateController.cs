@@ -150,6 +150,7 @@ public class GameStateController : MonoBehaviour {
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
 						//AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
 						annaobject.gameObject.GetComponent<Animator>().enabled=true;
+						annaobject.gameObject.GetComponent<Animator>().StartPlayback();
 						annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 						annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[(int)currentGameState]);
 						
