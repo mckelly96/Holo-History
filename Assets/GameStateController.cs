@@ -6,6 +6,7 @@ using System;
 //There should only be 1 of these in the scene
 public class GameStateController : MonoBehaviour {
 
+    public TextMesh textOutput;
 	/*********** GAME STATES **********/
 	// TODO: Change these names
 	// Things like marker calibration and entering/exiting room are not included
@@ -20,8 +21,10 @@ public class GameStateController : MonoBehaviour {
 
 	// TODO: initialize to actual marker names
 	// String constants for the marker names
-	string OUTSIDE_DOOR_MARKER = "outside";
-	string INSIDE_DOOR_MARKER = "inside";
+	string OUTSIDE_DOOR_MARKER = "Fissure";
+	string INSIDE_DOOR_MARKER = "Astronaut";
+
+	float timeToWaitForAnna=0.0f;
 
 	/********** MARKER CALIBRATION **********/
 	// Keep track of positioned markers because there's no way we can track all markers in 1 frame due to camera FOV and 
@@ -81,11 +84,14 @@ public class GameStateController : MonoBehaviour {
 
 			// Only check for markers AFTER she's done talking (check in the audioclip (isPlaying) for the character)
 			if (currentlyPlayingAClip){
-				if (!annasAudioSource.isPlaying){
+				if (!(timeToWaitForAnna>0.0f)){
 					currentlyPlayingAClip = false;
 					waitingForUserToLeaveRoom = true;
 				}
-
+				else{
+					textOutput.text="Anna is talking";
+					timeToWaitForAnna-=Time.deltaTime;
+				}
 				// Else: Anna is talking
 			}
 			else{
@@ -94,39 +100,51 @@ public class GameStateController : MonoBehaviour {
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
 					// Calculates angle between cameraLocation vector and markerLocation vector
-					float angle = Vector3.Angle(hololensLocation.gameObject.transform.forward, insideMarker.gameObject.transform.position - hololensLocation.gameObject.transform.position);
+					//use vector.angle if assuming marker is not vertical
+					float angle =Math.Abs(Vector3.Angle(hololensLocation.gameObject.transform.forward,insideMarker.gameObject.transform.up));
 
 					// Use absolute value to ensure that you are looking either left or right of the markers
-					if(Math.Abs(180 - angle) < 15.0f) {
+					if(Math.Abs(180 - angle) < 30.0f && (hololensLocation.gameObject.transform.position-insideMarker.gameObject.transform.position).magnitude<1.0f) {
 						// Enter room immediately after exiting, no other state between right now.
 						// Will need some fix for multiple rooms
 						waitingForUserToLeaveRoom = false;
 						waitingForUserToEnterRoom = false;
+						textOutput.text="entered room";
+					}
+					else{
+						textOutput.text="ENTER: "+(int)angle;
 					}
 				} else if(waitingForUserToLeaveRoom) {
 					Debug.Log("Searching for marker to leave the room.");
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
 					// Calculates angle between cameraLocation vector and markerLocation vector
-					float angle = Vector3.Angle(hololensLocation.gameObject.transform.forward, outsideMarker.gameObject.transform.position - hololensLocation.gameObject.transform.position);
+					float angle = Math.Abs(Vector3.Angle(hololensLocation.gameObject.transform.forward,outsideMarker.gameObject.transform.up));
 
 					// Use absolute value to ensure that you are looking either left or right of the markers
-					if(Math.Abs(180 - angle) < 15.0f) {
+					if(Math.Abs(180 - angle) < 30.0f && (hololensLocation.gameObject.transform.position-outsideMarker.gameObject.transform.position).magnitude<1) {
 						// Enter room immediately after exiting, no other state between right now.
 						// Will need some fix for multiple rooms
 						waitingForUserToLeaveRoom = false;
 						waitingForUserToEnterRoom = true;
+						textOutput.text="exited room";
+					}
+					else{
+						textOutput.text="EXIT: "+(int)angle;
 					}
 				} else {
 					// User entered room and we can play current state
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
 						AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
-
+						timeToWaitForAnna=audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState].length;
 						// Set new game state
 						currentGameState = AnnaEnumHelpers.GetEnumObjectByValue<possibleGameStatesRelatedToAnna>((int)currentGameState+1);
 						currentlyPlayingAClip = true;
+						textOutput.text="start talking";
 					}
-
+					else{
+						textOutput.text="game end: ";
+					}
 					// Else: end of game	
 				}
 			}
@@ -134,6 +152,9 @@ public class GameStateController : MonoBehaviour {
 			// We can use 3D angle calculations to determine if the user is more or less looking at the virtual marker; (cos(THETA)=(a dot b)/(|a|*|b|), with a = forward vector of camera
 				// and b as the vector from camera location to a marker.
 			// I'm not sure if this is computationally cheaper than doing legit tracking... I would imagine that it is.
+		}
+		else{
+			textOutput.text="waiting for calibration: "+calibratedMarkers.Count;
 		}
 	}
 

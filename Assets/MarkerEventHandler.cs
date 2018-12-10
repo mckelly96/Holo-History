@@ -19,6 +19,7 @@ using System;
 /// </summary>
 public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
 {
+
     #region PROTECTED_MEMBER_VARIABLES
 
     protected TrackableBehaviour mTrackableBehaviour;
@@ -101,8 +102,9 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
         var colliderComponents = GetComponentsInChildren<Collider>(true);
         var canvasComponents = GetComponentsInChildren<Canvas>(true);
 
-        Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
-        output.text="Trackable " + mTrackableBehaviour.TrackableName + " found";
+        Debug.Log("Trackable " + mTrackableBehaviour.TrackableName);
+        output.text="Trackable " + mTrackableBehaviour.TrackableName +": "+ "..."+ ((float)(Math.Truncate((double)gameObject.transform.up.x*100.0) / 100.0))+" "+ ((float)(Math.Truncate((double)gameObject.transform.up.y*100.0) / 100.0))+" "+ ((float)(Math.Truncate((double)gameObject.transform.up.z*100.0) / 100.0))+ ((float)(Math.Truncate((double)gameObject.transform.right.x*100.0) / 100.0))+" "+ ((float)(Math.Truncate((double)gameObject.transform.right.y*100.0) / 100.0))+" "+ ((float)(Math.Truncate((double)gameObject.transform.right.z*100.0) / 100.0))+"*****"+Vector3.Angle(new Vector3(0,0,-1),gameObject.transform.up);
+
 
         thisMarkerHasBeenFound=true; //this would be used for a dynamic object, i guess. not really useful right now
 
