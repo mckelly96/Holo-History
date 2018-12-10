@@ -9,6 +9,7 @@ Confidential and Proprietary - Protected under copyright and other laws.
 using UnityEngine;
 using Vuforia;
 using UnityEngine.UI;
+using System;
 
 /// <summary>
 /// A custom handler that implements the ITrackableEventHandler interface.
@@ -24,12 +25,15 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
     protected TrackableBehaviour.Status m_PreviousStatus;
     protected TrackableBehaviour.Status m_NewStatus;
     public TextMesh output;
+    public string thisMarkersName="";
 
     bool thisMarkerHasBeenFound=false;
     GameStateController myController;
+    
     #endregion // PROTECTED_MEMBER_VARIABLES
 
     #region UNITY_MONOBEHAVIOUR_METHODS
+
 
     protected virtual void Start()
     {
@@ -109,8 +113,9 @@ public class MarkerEventHandler : MonoBehaviour, ITrackableEventHandler
             mTrackableBehaviour.UnregisterTrackableEventHandler(this);
         
         //ask controller to register this marker
-        myController.updateMarkerTrackedStated(mTrackableBehaviour.TrackableName);
-
+        thisMarkersName=mTrackableBehaviour.TrackableName;
+        myController.updateMarkerTrackedStated(this);
+        
 
         // Enable rendering:
         foreach (var component in rendererComponents)
