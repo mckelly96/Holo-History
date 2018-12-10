@@ -1183,6 +1183,14 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 1bec7f46350d58947a003a6e709e688d, type: 2}
+    - target: {fileID: 9500000, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 13700004, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
+      propertyPath: m_SelectedEditorRenderState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
   m_IsPrefabAsset: 0
@@ -2512,7 +2520,7 @@ MonoBehaviour:
     phonemeName: Rest
     phoneme: 0
   playOnAwake: 0
-  loop: 1
+  loop: 0
   defaultClip: {fileID: 0}
   defaultDelay: 0
   scaleAudioSpeed: 1
@@ -2528,6 +2536,21 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   animCurves: []
   lastUsedVersion: 1.401
+--- !u!111 &1720242693
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1720242690}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Animation: {fileID: 7400006, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
+  m_Animations:
+  - {fileID: 7400006, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!4 &1720242694 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 5b78be25740250b47ad3c49400fa6789,
@@ -2576,11 +2599,19 @@ MonoBehaviour:
   outsideMarker: {fileID: 0}
   insideMarker: {fileID: 0}
   audioClipsCorrespondingToEachOfAnnasStates:
-  - {fileID: 8300000, guid: c996c7abc480a0340ac78e83807dc1c8, type: 3}
-  - {fileID: 8300000, guid: c996c7abc480a0340ac78e83807dc1c8, type: 3}
-  - {fileID: 8300000, guid: c996c7abc480a0340ac78e83807dc1c8, type: 3}
-  - {fileID: 8300000, guid: c996c7abc480a0340ac78e83807dc1c8, type: 3}
+  - {fileID: 8300000, guid: 64507646664bc1845ae1d73304ffb39c, type: 3}
+  - {fileID: 8300000, guid: e1006470eb7ff0e4e8ea2369073b8e90, type: 3}
+  - {fileID: 8300000, guid: ae05643583b9e4e4f923b8413ef1da93, type: 3}
+  - {fileID: 8300000, guid: fd3a4afbeeb31b94382858914e59d8c5, type: 3}
   annasAudioSource: {fileID: 967720819}
+  annaLipSyncObject: {fileID: 1720242692}
+  lipsyncDataCorrespondingToEachAudioClip:
+  - {fileID: 11400000, guid: 2f6d1a5d4f01fe3409441b52bd3f4632, type: 2}
+  - {fileID: 11400000, guid: bcdd81fb31576064892ab3403fbffa70, type: 2}
+  - {fileID: 11400000, guid: 2f7725bd67f2b2d42872edde2919e462, type: 2}
+  - {fileID: 11400000, guid: 39f8dd7dc7d2f6d4db8e7b0327fb7f13, type: 2}
+  annaobject: {fileID: 1720242690}
+  annagesture: {fileID: 7400002, guid: 5b78be25740250b47ad3c49400fa6789, type: 3}
 --- !u!4 &1833717704
 Transform:
   m_ObjectHideFlags: 0

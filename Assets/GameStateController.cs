@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RogoDigital.Lipsync;
 using System;
 
 //There should only be 1 of these in the scene
@@ -45,6 +46,11 @@ public class GameStateController : MonoBehaviour {
 	public List<AudioClip> audioClipsCorrespondingToEachOfAnnasStates; // Same length as possibleGameStatesRelatedToAnna
 	public AudioSource annasAudioSource; //reference to the clip attached to the lipsync character itself
 
+	public LipSync annaLipSyncObject;
+	public List<LipSyncData> lipsyncDataCorrespondingToEachAudioClip;
+
+	public GameObject annaobject;
+	public AnimationClip annagesture;
 	/********** BOOLEANS **********/
 	/*
 	* Set to true AFTER Anna finishes talking so the user doesn't leave before she's finished. We basically LOCK the game state until she's done talking.
@@ -68,6 +74,9 @@ public class GameStateController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// Not necessary, consider removing
+		//annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[0]);
+		//gameObject.GetComponent<Animation>().
+		//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 	}
 	
 	// Update is called once per frame
@@ -75,6 +84,9 @@ public class GameStateController : MonoBehaviour {
 	// Change state, then the new state will be handled in the NEXT frame
 	// NOTE: NEVER use while loops in update. Use IF statements to check for state changes every frame.
 	void Update () {
+		//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+		//gameObject.GetComponent<Animation>().Play("gesture");
+		//gameObject.GetComponent<Animator>().Play("gesture");
 		// For this functionality to start, ALL tracking should be completed and thus vuforia is no longer needed
 		// Consider having tooltips to get the user to look around for the markers...otherwise instruct them in real life
 		// Assume markers are positioned and handle game states.
@@ -87,6 +99,7 @@ public class GameStateController : MonoBehaviour {
 				if (!(timeToWaitForAnna>0.0f)){
 					currentlyPlayingAClip = false;
 					waitingForUserToLeaveRoom = true;
+					annaobject.gameObject.GetComponent<Animator>().enabled=false;
 				}
 				else{
 					textOutput.text="Anna is talking";
@@ -135,7 +148,11 @@ public class GameStateController : MonoBehaviour {
 				} else {
 					// User entered room and we can play current state
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
-						AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
+						//AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
+						annaobject.gameObject.GetComponent<Animator>().enabled=true;
+						annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+						annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[(int)currentGameState]);
+						
 						timeToWaitForAnna=audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState].length;
 						// Set new game state
 						currentGameState = AnnaEnumHelpers.GetEnumObjectByValue<possibleGameStatesRelatedToAnna>((int)currentGameState+1);

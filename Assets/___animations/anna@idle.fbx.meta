@@ -474,12 +474,18 @@ ModelImporter:
     4300012: teeth_baseMesh
     4300014: model_mesh.001
     7400000: MakeHuman default skeleton|MakeHuman default skeletonAction
+    7400002: MakeHuman default skeleton|gesturing
+    7400004: MakeHuman default skeleton|gesturingnew
+    7400006: MakeHuman default skeleton|idle
+    7400008: MakeHuman default skeleton|idlenew
+    7400010: braid01Mesh|idle
     9500000: //RootNode
     10800000: Lamp
     10800002: Lamp.001
     10800004: Sun
     10800006: Sun.001
     10800008: Sun.002
+    11100000: //RootNode
     13700000: braid01Mesh
     13700002: eyebrow001Mesh
     13700004: eyelashes03Mesh
@@ -549,7 +555,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -603,7 +609,7 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
