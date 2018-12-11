@@ -70,13 +70,15 @@ public class GameStateController : MonoBehaviour {
 	* This is done to ensure that the next marker cannot be accessed while Anna is talking, thus causing problems.
 	*/
 	bool currentlyPlayingAClip=false;
+
+	int timeToNextKey=30;
 	
 	// Use this for initialization
 	void Start () {
 		// Not necessary, consider removing
 		//annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[0]);
 		//gameObject.GetComponent<Animation>().
-		//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+		annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 	}
 	
 	// Update is called once per frame
@@ -84,6 +86,17 @@ public class GameStateController : MonoBehaviour {
 	// Change state, then the new state will be handled in the NEXT frame
 	// NOTE: NEVER use while loops in update. Use IF statements to check for state changes every frame.
 	void Update () {
+		if (Input.GetKey("up") && false)
+        {
+			if (timeToNextKey<0){
+           		Debug.Log("up arrow key is held down");
+				timeToNextKey=30;
+				annaobject.gameObject.GetComponent<Animator>().enabled=!annaobject.gameObject.GetComponent<Animator>().enabled;
+			}
+			else{
+				timeToNextKey--;
+			}
+        }
 		//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 		//gameObject.GetComponent<Animation>().Play("gesture");
 		//gameObject.GetComponent<Animator>().Play("gesture");
@@ -99,16 +112,18 @@ public class GameStateController : MonoBehaviour {
 				if (!(timeToWaitForAnna>0.0f)){
 					currentlyPlayingAClip = false;
 					waitingForUserToLeaveRoom = true;
-					annaobject.gameObject.GetComponent<Animator>().enabled=false;
+					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
 				}
 				else{
 					textOutput.text="Anna is talking";
+					annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 					timeToWaitForAnna-=Time.deltaTime;
 				}
 				// Else: Anna is talking
 			}
 			else{
 				if(waitingForUserToEnterRoom) {
+					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
 					Debug.Log("Searching for marker to enter the room.");
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
@@ -128,6 +143,7 @@ public class GameStateController : MonoBehaviour {
 						textOutput.text="ENTER: "+(int)angle;
 					}
 				} else if(waitingForUserToLeaveRoom) {
+					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
 					Debug.Log("Searching for marker to leave the room.");
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
@@ -149,9 +165,9 @@ public class GameStateController : MonoBehaviour {
 					// User entered room and we can play current state
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
 						//AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
-						annaobject.gameObject.GetComponent<Animator>().enabled=true;
-						annaobject.gameObject.GetComponent<Animator>().StartPlayback();
 						annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+						//annaobject.gameObject.GetComponent<Animator>().StartPlayback();
+						
 						annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[(int)currentGameState]);
 						
 						timeToWaitForAnna=audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState].length;
@@ -172,6 +188,7 @@ public class GameStateController : MonoBehaviour {
 			// I'm not sure if this is computationally cheaper than doing legit tracking... I would imagine that it is.
 		}
 		else{
+			annaobject.gameObject.GetComponent<Animator>().Play("idle2");
 			textOutput.text="waiting for calibration: "+calibratedMarkers.Count;
 		}
 	}
