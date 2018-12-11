@@ -51,6 +51,7 @@ public class GameStateController : MonoBehaviour {
 
 	public GameObject annaobject;
 	public AnimationClip annagesture;
+
 	/********** BOOLEANS **********/
 	/*
 	* Set to true AFTER Anna finishes talking so the user doesn't leave before she's finished. We basically LOCK the game state until she's done talking.
@@ -72,6 +73,8 @@ public class GameStateController : MonoBehaviour {
 	bool currentlyPlayingAClip=false;
 
 	int timeToNextKey=30;
+
+	Vector3 annasLastLocation=new Vector3(0,0,0);
 	
 	// Use this for initialization
 	void Start () {
@@ -86,17 +89,20 @@ public class GameStateController : MonoBehaviour {
 	// Change state, then the new state will be handled in the NEXT frame
 	// NOTE: NEVER use while loops in update. Use IF statements to check for state changes every frame.
 	void Update () {
-		if (Input.GetKey("up") && false)
+		if (Input.GetKey("up"))
         {
 			if (timeToNextKey<0){
            		Debug.Log("up arrow key is held down");
 				timeToNextKey=30;
-				annaobject.gameObject.GetComponent<Animator>().enabled=!annaobject.gameObject.GetComponent<Animator>().enabled;
-			}
-			else{
-				timeToNextKey--;
+				//annaobject.gameObject.GetComponent<Animator>().enabled=!annaobject.gameObject.GetComponent<Animator>().enabled;
+				annaobject.GetComponent<UnityEngine.AI.NavMeshAgent>().destination=new Vector3(-3,0,-4.5f);
 			}
         }
+		timeToNextKey--;
+
+		//lookAtTransform.position=new Vector3(1,1,1);
+		annaobject.gameObject.transform.LookAt(new Vector3(hololensLocation.transform.position.x,0,hololensLocation.transform.position.z));
+		//annaLipSyncObject.gameObject.transform.rotation=Quaternion.Euler(annaLipSyncObject.gameObject.transform.rotation.x,annaLipSyncObject.gameObject.transform.rotation.y,annaLipSyncObject.gameObject.transform.rotation.z);
 		//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
 		//gameObject.GetComponent<Animation>().Play("gesture");
 		//gameObject.GetComponent<Animator>().Play("gesture");
@@ -112,18 +118,42 @@ public class GameStateController : MonoBehaviour {
 				if (!(timeToWaitForAnna>0.0f)){
 					currentlyPlayingAClip = false;
 					waitingForUserToLeaveRoom = true;
-					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					//annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					annaobject.GetComponent<UnityEngine.AI.NavMeshAgent>().destination=new Vector3(0,0,-1.5f);
+					if ((annaobject.gameObject.transform.position-annasLastLocation).magnitude>0.015){
+						annaobject.gameObject.GetComponent<Animator>().Play("walk");
+					}
+					else{
+						annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					}
 				}
 				else{
 					textOutput.text="Anna is talking";
-					annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+					//annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+					annaobject.GetComponent<UnityEngine.AI.NavMeshAgent>().destination=hololensLocation.transform.position+(2*hololensLocation.transform.forward);
+
+
+					//TODO: use blendspace to fix transitions
+					/*if ((annaobject.gameObject.transform.position-annasLastLocation).magnitude>0.015){
+						annaobject.gameObject.GetComponent<Animator>().Play("walkandgesture");
+					}
+					else{
+						annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+					}*/
+					annaobject.gameObject.GetComponent<Animator>().Play("walkandgesture");
 					timeToWaitForAnna-=Time.deltaTime;
+					annasLastLocation=annaobject.gameObject.transform.position;
 				}
 				// Else: Anna is talking
 			}
 			else{
 				if(waitingForUserToEnterRoom) {
-					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					if ((annaobject.gameObject.transform.position-annasLastLocation).magnitude>0.015){
+						annaobject.gameObject.GetComponent<Animator>().Play("walk");
+					}
+					else{
+						annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					}
 					Debug.Log("Searching for marker to enter the room.");
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
@@ -143,7 +173,12 @@ public class GameStateController : MonoBehaviour {
 						textOutput.text="ENTER: "+(int)angle;
 					}
 				} else if(waitingForUserToLeaveRoom) {
-					annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					if ((annaobject.gameObject.transform.position-annasLastLocation).magnitude>0.015){
+						annaobject.gameObject.GetComponent<Animator>().Play("walk");
+					}
+					else{
+						annaobject.gameObject.GetComponent<Animator>().Play("idle2");
+					}
 					Debug.Log("Searching for marker to leave the room.");
 
 					// Documentation for Vector3.Angle: https://docs.unity3d.com/ScriptReference/Vector3.Angle.html
@@ -165,7 +200,7 @@ public class GameStateController : MonoBehaviour {
 					// User entered room and we can play current state
 					if ((int) currentGameState < Enum.GetNames(typeof(possibleGameStatesRelatedToAnna)).Length) {
 						//AudioSource.PlayClipAtPoint(audioClipsCorrespondingToEachOfAnnasStates[(int)currentGameState], new Vector3(0,0,0));
-						annaobject.gameObject.GetComponent<Animator>().Play("gesture");
+						annaobject.gameObject.GetComponent<Animator>().Play("walkandgesture");
 						//annaobject.gameObject.GetComponent<Animator>().StartPlayback();
 						
 						annaLipSyncObject.Play(lipsyncDataCorrespondingToEachAudioClip[(int)currentGameState]);
