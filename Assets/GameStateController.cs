@@ -142,7 +142,7 @@ public class GameStateController : MonoBehaviour {
 					}*/
 					annaobject.gameObject.GetComponent<Animator>().Play("walkandgesture");
 					timeToWaitForAnna-=Time.deltaTime;
-					annasLastLocation=annaobject.gameObject.transform.position;
+					
 				}
 				// Else: Anna is talking
 			}
@@ -226,6 +226,7 @@ public class GameStateController : MonoBehaviour {
 			annaobject.gameObject.GetComponent<Animator>().Play("idle2");
 			textOutput.text="waiting for calibration: "+calibratedMarkers.Count;
 		}
+		annasLastLocation=annaobject.gameObject.transform.position;
 	}
 
 	// This function will be called BY the markers, which will all have a reference to this GameStateController object (which there should only be 1 of).
