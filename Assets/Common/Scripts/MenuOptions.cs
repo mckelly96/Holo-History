@@ -1,9 +1,9 @@
 /*===============================================================================
 Copyright (c) 2015-2018 PTC Inc. All Rights Reserved.
- 
+
 Copyright (c) 2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
- 
-Vuforia is a trademark of PTC Inc., registered in the United States and other 
+
+Vuforia is a trademark of PTC Inc., registered in the United States and other
 countries.
 ===============================================================================*/
 using UnityEngine;
@@ -97,7 +97,7 @@ public class MenuOptions : MonoBehaviour
             List<DataSet> tempDataSetList = new List<DataSet>();
 
             // Create a temporary list of active datasets to prevent
-            // InvalidOperationException caused by modifying the active 
+            // InvalidOperationException caused by modifying the active
             // dataset list while iterating through it
             foreach (DataSet dataset in objTracker.GetDataSets())
             {
@@ -106,7 +106,7 @@ public class MenuOptions : MonoBehaviour
 
             // Reset active datasets
             foreach (DataSet dataset in tempDataSetList)
-            { 
+            {
                 objTracker.DeactivateDataSet(dataset);
                 objTracker.ActivateDataSet(dataset);
             }
@@ -146,6 +146,15 @@ public class MenuOptions : MonoBehaviour
                 IsDisplayed = false;
             }
         }
+    }
+
+    public void CycleGuideView()
+    {
+        var modelTarget = FindObjectOfType<ModelTargetBehaviour>().ModelTarget;
+
+        int guideViewIndexToActivate =
+            (modelTarget.GetActiveGuideViewIndex() + 1) % modelTarget.GetNumGuideViews();
+        modelTarget.SetActiveGuideViewIndex(guideViewIndexToActivate);
     }
 
     #endregion //PUBLIC_METHODS

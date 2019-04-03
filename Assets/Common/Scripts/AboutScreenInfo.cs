@@ -59,7 +59,7 @@ public class AboutScreenInfo
         titles = new Dictionary<string, string>()
         {
             { "ImageTargets", "Image Targets" },
-            { "VuMark", "VuMark" },
+            { "VuMark", "VuMarks" },
             { "CylinderTargets", "Cylinder Targets" },
             { "MultiTargets", "Multi Targets" },
             { "UserDefinedTargets", "User Defined Targets" },
@@ -67,6 +67,7 @@ public class AboutScreenInfo
             { "CloudReco", "Cloud Reco" },
             { "VirtualButtons", "Virtual Buttons" },
             { "ModelTargets", "Model Targets" },
+            { "ModelTargetsTrained", "Model Targets (trained)"},
             { "GroundPlane", "Ground Plane" },
             { "BackgroundTextureAccess", "Background Texture Access" },
             { "OcclusionManagement", "Occlusion Management" },
@@ -78,10 +79,10 @@ public class AboutScreenInfo
 
         string vuforiaVersion = Vuforia.VuforiaUnity.GetVuforiaLibraryVersion();
         string unityVersion = UnityEngine.Application.unityVersion;
-        UnityEngine.Debug.Log("Vuforia " + vuforiaVersion + "\nUnity " + unityVersion);
+        UnityEngine.Debug.Log("Vuforia Engine " + vuforiaVersion + "\nUnity " + unityVersion);
 
         string vuforia = Vuforia.VuforiaRuntime.Instance.InitializationState != Vuforia.VuforiaRuntime.InitState.NOT_INITIALIZED
-                                ? "<color=green>Yes</color>"
+                                ? "<#23B200>Yes</color>"
                                 : "<color=red>No</color>";
 
         string description = "\n<size=26>Description:</size>";
@@ -90,26 +91,21 @@ public class AboutScreenInfo
         string instructions = "<size=26>Instructions:</size>";
         string footer =
             "<size=26>Build Version Info:</size>" +
-            "\n• Vuforia " + vuforiaVersion +
+            "\n• Vuforia Engine " + vuforiaVersion +
             "\n• Unity " + unityVersion +
             "\n" +
             "\n<size=26>Project Settings Info:</size>" +
-            "\n• Vuforia Enabled: " + vuforia +
+            "\n• Vuforia Engine Enabled: " + vuforia +
             "\n" +
-            "\n<size=26>Statistics:</size>" +
-            "\nData collected is used solely for product quality improvements" +
-            "\nhttps://developer.vuforia.com/legal/statistics" +
-            "\n" +
-            "\n<size=26>Developer Agreement:</size>" +
-            "\nhttps://developer.vuforia.com/legal/vuforia-developer-agreement" +
-            "\n" +
-            "\n<size=26>Privacy Policy:</size>" +
-            "\nhttps://developer.vuforia.com/legal/privacy" +
-            "\n" +
-            "\n<size=26>Terms of Use:</size>" +
-            "\nhttps://developer.vuforia.com/legal/EULA" +
+            "\n<size=26>Links:</size>" +
+            "\n• <link=https://developer.vuforia.com/legal/vuforia-developer-agreement><color=blue><u>Developer Agreement</u></color></link>" +
+            "\n• <link=https://developer.vuforia.com/legal/privacy><color=blue><u>Privacy Policy</u></color></link>" +
+            "\n• <link=https://developer.vuforia.com/legal/EULA><color=blue><u>Terms of Use</u></color></link>" +
+            "\n• <link=https://developer.vuforia.com/legal/statistics><color=blue><u>Statistics</u></color></link>" +
             "\n\n" +
-            "© 2018 PTC Inc. All Rights Reserved.";
+            "© 2018 PTC Inc. All Rights Reserved." +
+            "\n";
+        string targetPDFsURL = "<link=https://library.vuforia.com/content/vuforia-library/en/articles/Solution/sample-apps-target-pdfs.html>";
 
         // Init our Description Strings
 
@@ -130,7 +126,8 @@ public class AboutScreenInfo
             "\n• Manage camera functions: flash and continuous autofocus" +
             "\n\n" +
             targets +
-            "\n• Included Targets" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -145,7 +142,7 @@ public class AboutScreenInfo
         descriptions.Add(
             "VuMark",
             description +
-            "\nThe VuMark sample shows how to detect and track VuMarks." +
+            "\nThe VuMarks sample shows how to detect and track VuMarks." +
             "\n\n" +
             keyFunctionality +
             "\n• Simultaneous detection and tracking of multiple VuMarks" +
@@ -154,7 +151,8 @@ public class AboutScreenInfo
             "\n• Render an outline when a VuMark is detected" +
             "\n\n" +
             targets +
-            "\n• Included VuMarks" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point device at VuMark" +
@@ -178,7 +176,8 @@ public class AboutScreenInfo
             "\n• Occlusion handling" +
             "\n\n" +
             targets +
-            "\n• Included Target" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             "Print target and wrap around a standard soda can." +
             "\n\n" +
@@ -202,7 +201,8 @@ public class AboutScreenInfo
             "\n• Occlusion handling" +
             "\n\n" +
             targets +
-            "\n• Included Target" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -244,7 +244,8 @@ public class AboutScreenInfo
             "\n• Manage camera functions: flash" +
             "\n\n" +
             targets +
-            "\n• Included Target" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -267,7 +268,8 @@ public class AboutScreenInfo
             "\n• Activate Extended Tracking" +
             "\n\n" +
             targets +
-            "\n• Included Targets" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -291,7 +293,8 @@ public class AboutScreenInfo
             "\n• Button occlusion event handling" +
             "\n\n" +
             targets +
-            "\n• Included Targets" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>Target PDFs</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -310,7 +313,7 @@ public class AboutScreenInfo
             "\n\n" +
             keyFunctionality +
             "\n• Load and activate a single Model Target database at a time" +
-            "\n• Detection using the initial Detection Position of the Model Target" +
+            "\n• Detection using one of the initial Detection Positions of the Model Target" +
             "\n• Automatic 3D object tracking after successful detection" +
             "\n• Extended Tracking when target is not visible in the camera view" +
             "\n\n" +
@@ -320,6 +323,38 @@ public class AboutScreenInfo
             instructions +
             "\n• Point camera at target to view" +
             "\n• Single tap to focus" +
+            "\n• Double tap to access options menu" +
+            "\n• Change the Detection Position if needed" +
+            "\n\n" +
+            footer + "\n");
+
+
+        // Model Targets Trained
+
+        descriptions.Add(
+            "ModelTargetsTrained",
+            description +
+            "\nThe Model Targets (trained) sample demonstrates the detection " +
+            "and tracking of two example objects in arbitrary order." +
+            "\n\n" +
+            keyFunctionality +
+            "\n• Loading and activation of Model Targets (Two Detection Positions)" +
+            "\n• Detection of the object in camera view " +
+            "\n• Automatic 3D object tracking after successful detection " +
+            "\n• Device Tracking when the object is not visible in the camera view" +
+            "\n\n" +
+            targets +
+            "\n• Model Target: 3D Printed Model (Mars Lander)" +
+            "\n• Model Target: Toy Model (Bike)" +
+            "\n\n" +
+            instructions +
+            "\n• Point camera at one of the two objects (Mars Lander or Bike)" +
+            "\n• Move around the object" +
+            "\n• Point the camera to the next object" +
+            "\n• Move around the object" +
+            "\n• Single tap to focus" +
+            "\n• Double tap to access the options menu" +
+            "\n• Press Reset to restart the experience" +
             "\n\n" +
             footer + "\n");
 
@@ -371,7 +406,8 @@ public class AboutScreenInfo
             "\n• Apply shaders to video background" +
             "\n\n" +
             targets +
-            "\n• ImageTarget: Fissure (Included with Sample)" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>ImageTarget: Fissure</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -392,7 +428,8 @@ public class AboutScreenInfo
             "\n• Manage occlusion" +
             "\n\n" +
             targets +
-            "\n• MultiTarget: MarsBox (Included with Sample)" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>MultiTarget: MarsBox</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +
@@ -416,7 +453,8 @@ public class AboutScreenInfo
             "\n• Transition display of book info to screen when off target" +
             "\n\n" +
             targets +
-            "\n• ImageTargets: 3 Book Covers (Included with Sample)" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>ImageTargets: 3 Book Covers</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at sample book cover to view info" +
@@ -436,7 +474,8 @@ public class AboutScreenInfo
             "\n• Transition between AR camera tracking and VR device tracking" +
             "\n\n" +
             targets +
-            "\n• ImageTarget: Astronaut (Included with Sample)" +
+            "\n• " + targetPDFsURL +
+            "<color=blue><u>ImageTarget: Astronaut</u></color></link>" +
             "\n\n" +
             instructions +
             "\n• Point camera at target to view" +

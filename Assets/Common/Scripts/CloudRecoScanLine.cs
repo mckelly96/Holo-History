@@ -29,7 +29,7 @@ public class CloudRecoScanLine : MonoBehaviour
 
     void Start()
     {
-        m_Camera = DigitalEyewearARController.Instance.PrimaryCamera ?? Camera.main;
+        m_Camera = Camera.main;
         m_Renderer = GetComponent<Renderer>();
         m_CloudRecoBehaviour = FindObjectOfType<CloudRecoBehaviour>();
 
@@ -71,7 +71,7 @@ public class CloudRecoScanLine : MonoBehaviour
 
             // Position the mesh
             float y = -0.5f * viewHeight + u * viewHeight;
-            if (mMovingDown) 
+            if (mMovingDown)
             {
                 y *= -1;
             }

@@ -14,7 +14,7 @@ using Vuforia;
 /// It registers itself at the CloudRecoBehaviour and is notified of new search results as well as error messages
 /// The current state is visualized and new results are enabled using the TargetFinder API.
 /// </summary>
-public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
+public class CloudRecoEventHandler : MonoBehaviour, IObjectRecoEventHandler
 {
     #region PRIVATE_MEMBERS
     CloudRecoBehaviour m_CloudRecoBehaviour;
@@ -120,6 +120,8 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
     {
         Debug.Log("<color=blue>OnNewSearchResult(): </color>" + targetSearchResult.TargetName);
 
+        TargetFinder.CloudRecoSearchResult cloudRecoResult = (TargetFinder.CloudRecoSearchResult)targetSearchResult;
+
         // This code demonstrates how to reuse an ImageTargetBehaviour for new search results
         // and modifying it according to the metadata. Depending on your application, it can
         // make more sense to duplicate the ImageTargetBehaviour using Instantiate() or to
@@ -128,18 +130,18 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
         // TargetFinder.EnableTracking(TargetSearchResult result, string gameObjectName)
 
         // Check if the metadata isn't null
-        if (targetSearchResult.MetaData == null)
+        if (cloudRecoResult.MetaData == null)
         {
             Debug.Log("Target metadata not available.");
         }
         else
         {
-            Debug.Log("MetaData: " + targetSearchResult.MetaData);
-            Debug.Log("TargetName: " + targetSearchResult.TargetName);
-            Debug.Log("Pointer: " + targetSearchResult.TargetSearchResultPtr);
-            Debug.Log("TargetSize: " + targetSearchResult.TargetSize);
-            Debug.Log("TrackingRating: " + targetSearchResult.TrackingRating);
-            Debug.Log("UniqueTargetId: " + targetSearchResult.UniqueTargetId);
+            Debug.Log("MetaData: " + cloudRecoResult.MetaData);
+            Debug.Log("TargetName: " + cloudRecoResult.TargetName);
+            Debug.Log("Pointer: " + cloudRecoResult.TargetSearchResultPtr);
+            Debug.Log("TargetSize: " + cloudRecoResult.TargetSize);
+            Debug.Log("TrackingRating: " + cloudRecoResult.TrackingRating);
+            Debug.Log("UniqueTargetId: " + cloudRecoResult.UniqueTargetId);
         }
 
         // Changing CloudRecoBehaviour.CloudRecoEnabled to false will call TargetFinder.Stop()
@@ -150,10 +152,10 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
         m_TargetFinder.ClearTrackables(false);
 
         // Enable the new result with the same ImageTargetBehaviour:
-        m_TargetFinder.EnableTracking(targetSearchResult, m_ImageTargetBehaviour.gameObject);
+        m_TargetFinder.EnableTracking(cloudRecoResult, m_ImageTargetBehaviour.gameObject);
 
         // Pass the TargetSearchResult to the Trackable Event Handler for processing
-        m_ImageTargetBehaviour.gameObject.SendMessage("TargetCreated", targetSearchResult, SendMessageOptions.DontRequireReceiver);
+        m_ImageTargetBehaviour.gameObject.SendMessage("TargetCreated", cloudRecoResult, SendMessageOptions.DontRequireReceiver);
     }
     #endregion // INTERFACE_IMPLEMENTATION_ICloudRecoEventHandler
 

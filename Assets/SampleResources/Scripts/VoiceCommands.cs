@@ -52,9 +52,9 @@ public class VoiceCommands : MonoBehaviour
 
     void SetupKeywordCommands()
     {
-        keywords.Add("Reset Tracker", () =>
+        keywords.Add("Reset", () =>
         {
-            ResetTracker();
+            Reset();
         });
 
         keywords.Add("Show Menu", () =>
@@ -91,6 +91,12 @@ public class VoiceCommands : MonoBehaviour
             LoadingScreen.Run();
         });
 
+        keywords.Add("Trained", () =>
+        {
+            LoadingScreen.SceneToLoad = "3-ModelTargetsTrained";
+            LoadingScreen.Run();
+        });
+
         keywords.Add("VuMarks", () =>
         {
             LoadingScreen.SceneToLoad = "3-VuMarks";
@@ -117,7 +123,7 @@ public class VoiceCommands : MonoBehaviour
         }
     }
 
-    void ResetTracker()
+    void Reset()
     {
         var objTracker = TrackerManager.Instance.GetTracker<ObjectTracker>();
         if (objTracker != null && objTracker.IsActive)
@@ -131,6 +137,15 @@ public class VoiceCommands : MonoBehaviour
             }
 
             objTracker.Start();
+        }
+
+        ModelRecoEventHandler modelRecoEventHandler = FindObjectOfType<ModelRecoEventHandler>();
+
+        if (modelRecoEventHandler != null)
+        {
+            modelRecoEventHandler.ResetModelReco(false);
+            modelRecoEventHandler.ResetGuideViews();
+            modelRecoEventHandler.availableTargetsCanvas.alpha = 1;
         }
     }
 

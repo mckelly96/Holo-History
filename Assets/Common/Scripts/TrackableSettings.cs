@@ -7,104 +7,163 @@ Vuforia is a trademark of PTC Inc., registered in the United States and other
 countries.
 ===============================================================================*/
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Vuforia;
+using System.Timers;
 
 public class TrackableSettings : MonoBehaviour
 {
-    #region PUBLIC_MEMBERS
-    
-    [HideInInspector]
-    public bool m_DeviceTrackerEnabled = false;
-
-    [HideInInspector]
-    public FusionProviderType m_FusionProviderType = FusionProviderType.OPTIMIZE_MODEL_TARGETS_AND_SMART_TERRAIN;
-    
-    #endregion //PUBLIC_MEMBERS
-
     #region PRIVATE_MEMBERS
-    PositionalDeviceTracker m_PositionalDeviceTracker;
+    [SerializeField] bool deviceTrackerEnabled;
+    PositionalDeviceTracker positionalDeviceTracker;
+    Timer relocalizationStatusDelayTimer;
+    Timer resetDeviceTrackerTimer;
     #endregion // PRIVATE_MEMBERS
 
-    
+
     #region UNITY_MONOBEHAVIOUR_METHODS
-    
+
     private void Awake()
     {
-        VuforiaARController.Instance.RegisterBeforeVuforiaTrackersInitializedCallback(OnBeforeVuforiaTrackerInitialized);
         VuforiaARController.Instance.RegisterVuforiaInitializedCallback(OnVuforiaInitialized);
     }
 
     private void Start()
     {
         VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
+        DeviceTrackerARController.Instance.RegisterDevicePoseStatusChangedCallback(OnDevicePoseStatusChanged);
+
+        // Setup a timer to have short delay before processing RELOCALIZING status
+        this.relocalizationStatusDelayTimer = new Timer(1000);
+        this.relocalizationStatusDelayTimer.Elapsed += RelocalizingStatusDelay;
+        this.relocalizationStatusDelayTimer.AutoReset = false;
+
+        // Setup a timer to restart the DeviceTracker if tracking does not receive
+        // status change from StatusInfo.RELOCALIZATION after 10 seconds.
+        this.resetDeviceTrackerTimer = new Timer(10000);
+        this.resetDeviceTrackerTimer.Elapsed += ResetDeviceTracker;
+        this.resetDeviceTrackerTimer.AutoReset = false;
     }
 
     private void OnDestroy()
     {
-        VuforiaARController.Instance.UnregisterBeforeVuforiaTrackersInitializedCallback(OnBeforeVuforiaTrackerInitialized);
         VuforiaARController.Instance.UnregisterVuforiaStartedCallback(OnVuforiaStarted);
         VuforiaARController.Instance.UnregisterVuforiaInitializedCallback(OnVuforiaInitialized);
+        DeviceTrackerARController.Instance.UnregisterDevicePoseStatusChangedCallback(OnDevicePoseStatusChanged);
     }
-    
+
     #endregion // UNITY_MONOBEHAVIOUR_METHODS
 
-    
-    #region PRIVATE_METHODS
 
-    private void OnBeforeVuforiaTrackerInitialized()
-    {
-        // set the selected fusion provider mask in the DeviceTrackerARController before it's being used.
-        DeviceTrackerARController.Instance.FusionProvider = m_FusionProviderType;
-    }
+    #region VUFORIA_CALLBACKS
 
     private void OnVuforiaInitialized()
     {
 
-        m_PositionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
+        this.positionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
 
         // if we don't have yet a positional device tracker, initialize one
-        if (m_PositionalDeviceTracker == null)
+        if (this.positionalDeviceTracker == null)
         {
-            m_PositionalDeviceTracker = TrackerManager.Instance.InitTracker<PositionalDeviceTracker>();
+            this.positionalDeviceTracker = TrackerManager.Instance.InitTracker<PositionalDeviceTracker>();
 
-            if (m_PositionalDeviceTracker != null)
+            if (this.positionalDeviceTracker != null)
             {
                 Debug.Log("Successfully initialized the positional device tracker");
             }
             else
             {
                 Debug.LogError("Failed to initialize the positional device tracker");
-            }        
+            }
         }
     }
 
     private void OnVuforiaStarted()
     {
-        ToggleDeviceTracking(m_DeviceTrackerEnabled);
+        // Device Tracking is off by default for mobile samples.
+        // The deviceTrackerEnabled public Inspector option allows you to specify
+        // per-sample if the option is to be on by default. (i.e. Model Targets)
+        ToggleDeviceTracking(this.deviceTrackerEnabled);
     }
-    
+
+    void OnDevicePoseStatusChanged(Vuforia.TrackableBehaviour.Status status, Vuforia.TrackableBehaviour.StatusInfo statusInfo)
+    {
+        Debug.Log("OnDevicePoseStatusChanged(" + status + ", " + statusInfo + ")");
+
+        if (statusInfo == Vuforia.TrackableBehaviour.StatusInfo.RELOCALIZING)
+        {
+            // If the status is Relocalizing, then start the timer if it isn't active
+            if (!this.relocalizationStatusDelayTimer.Enabled)
+            {
+                this.relocalizationStatusDelayTimer.Start();
+            }
+        }
+        else
+        {
+            // If the status is not Relocalizing, then stop the timers if they are active
+            if (this.relocalizationStatusDelayTimer.Enabled)
+            {
+                this.relocalizationStatusDelayTimer.Stop();
+            }
+
+            if (this.resetDeviceTrackerTimer.Enabled)
+            {
+                this.resetDeviceTrackerTimer.Stop();
+            }
+
+            // Clear the status message
+            StatusMessage.Instance.Display(string.Empty);
+        }
+    }
+
+    #endregion // VUFORIA_CALLBACKS
+
+
+    #region PRIVATE_METHODS
+
+    // This is a C# delegate method for the Timer:
+    // ElapsedEventHandler(object sender, ElapsedEventArgs e)
+    void RelocalizingStatusDelay(System.Object source, ElapsedEventArgs e)
+    {
+        StatusMessage.Instance.Display("Point camera to previous position to restore tracking");
+
+        if (!this.resetDeviceTrackerTimer.Enabled)
+        {
+            this.resetDeviceTrackerTimer.Start();
+        }
+    }
+
+    // This is a C# delegate method for the Timer:
+    // ElapsedEventHandler(object sender, ElapsedEventArgs e)
+    void ResetDeviceTracker(System.Object source, ElapsedEventArgs e)
+    {
+        ToggleDeviceTracking(false);
+        ToggleDeviceTracking(true);
+    }
+
     #endregion // PRIVATE_METHODS
 
-    
+
     #region PUBLIC_METHODS
-    
+
     public bool IsDeviceTrackingEnabled()
     {
-        return m_DeviceTrackerEnabled;
+        return this.deviceTrackerEnabled;
     }
 
     public virtual void ToggleDeviceTracking(bool enableDeviceTracking)
     {
-        if (m_PositionalDeviceTracker != null)
+        if (this.positionalDeviceTracker != null)
         {
             if (enableDeviceTracking)
             {
                 // if the positional device tracker is not yet started, start it
-                if (!m_PositionalDeviceTracker.IsActive)
+                if (!this.positionalDeviceTracker.IsActive)
                 {
-                    if (m_PositionalDeviceTracker.Start())
+                    if (this.positionalDeviceTracker.Start())
                     {
                         Debug.Log("Successfully started device tracker");
                     }
@@ -114,9 +173,9 @@ public class TrackableSettings : MonoBehaviour
                     }
                 }
             }
-            else if (m_PositionalDeviceTracker.IsActive)
+            else if (this.positionalDeviceTracker.IsActive)
             {
-                m_PositionalDeviceTracker.Stop();
+                this.positionalDeviceTracker.Stop();
 
                 Debug.Log("Successfully stopped device tracker");
             }
@@ -126,7 +185,7 @@ public class TrackableSettings : MonoBehaviour
             Debug.LogError("Failed to toggle device tracker state, make sure device tracker is initialized");
         }
 
-        m_DeviceTrackerEnabled = m_PositionalDeviceTracker.IsActive;
+        this.deviceTrackerEnabled = this.positionalDeviceTracker.IsActive;
     }
 
     public string GetActiveDatasetName()
@@ -176,14 +235,15 @@ public class TrackableSettings : MonoBehaviour
         // 4. Finally, restart the object tracker and reset the device tracker.
         objectTracker.Start();
 
-        if (m_PositionalDeviceTracker != null)
+        if (this.positionalDeviceTracker != null)
         {
-            m_PositionalDeviceTracker.Reset();
+            this.positionalDeviceTracker.Reset();
         }
         else
         {
             Debug.LogError("Failed to reset device tracker");
         }
     }
+
     #endregion //PUBLIC_METHODS
 }

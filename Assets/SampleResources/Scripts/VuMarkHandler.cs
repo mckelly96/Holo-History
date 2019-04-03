@@ -6,6 +6,7 @@ countries.
 ===============================================================================*/
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using Vuforia;
@@ -22,7 +23,6 @@ public class VuMarkHandler : MonoBehaviour
     // 1. Canvas -- displays info about the VuMark
     // 2. LineRenderer -- displays border outline around VuMark
     const int PersistentNumberOfChildren = 2;
-    FusionProviderType fusionProviderType = FusionProviderType.OPTIMIZE_IMAGE_TARGETS_AND_VUMARKS;
     VuMarkManager vumarkManager;
     LineRenderer lineRenderer;
     Dictionary<string, Texture2D> vumarkInstanceTextures;
@@ -43,7 +43,6 @@ public class VuMarkHandler : MonoBehaviour
     void Awake()
     {
         VuforiaConfiguration.Instance.Vuforia.MaxSimultaneousImageTargets = 10; // Set to 10 for VuMarks
-        VuforiaARController.Instance.RegisterBeforeVuforiaTrackersInitializedCallback(OnBeforeVuforiaTrackerInitialized);
     }
 
     void Start()
@@ -69,7 +68,6 @@ public class VuMarkHandler : MonoBehaviour
     void OnDestroy()
     {
         VuforiaConfiguration.Instance.Vuforia.MaxSimultaneousImageTargets = 4; // Reset back to 4 when exiting
-        VuforiaARController.Instance.UnregisterBeforeVuforiaTrackersInitializedCallback(OnBeforeVuforiaTrackerInitialized);
         // Unregister callbacks from VuMark Manager
         this.vumarkManager.UnregisterVuMarkBehaviourDetectedCallback(OnVuMarkBehaviourDetected);
         this.vumarkManager.UnregisterVuMarkDetectedCallback(OnVuMarkDetected);
@@ -77,13 +75,6 @@ public class VuMarkHandler : MonoBehaviour
     }
 
     #endregion // MONOBEHAVIOUR_METHODS
-
-    void OnBeforeVuforiaTrackerInitialized()
-    {
-        // Set the selected fusion provider mask in the DeviceTrackerARController before it's being used.
-        Debug.Log("DeviceTrackerARController.Instance.FusionProvider = " + this.fusionProviderType);
-        DeviceTrackerARController.Instance.FusionProvider = this.fusionProviderType;
-    }
 
     void OnVuforiaStarted()
     {
@@ -207,7 +198,7 @@ public class VuMarkHandler : MonoBehaviour
     {
         int vumarkIdNumeric;
 
-        if (int.TryParse(GetVuMarkId(vumarkTarget), out vumarkIdNumeric))
+        if (int.TryParse(GetVuMarkId(vumarkTarget), NumberStyles.Integer, CultureInfo.InvariantCulture, out vumarkIdNumeric))
         {
             // Change the description based on the VuMark ID
             switch (vumarkIdNumeric % 4)
@@ -318,38 +309,11 @@ public class VuMarkHandler : MonoBehaviour
             wrapMode = TextureWrapMode.Clamp
         };
 
-        vumarkTarget.InstanceImage.CopyToTexture(texture);
+        vumarkTarget.InstanceImage.CopyToTexture(texture, false);
 
-        return FlipTextureY(texture);
+        return texture;
     }
 
-    Texture2D FlipTextureY(Texture2D sourceTexture)
-    {
-        Debug.Log("<color=cyan>FlipTextureY() called.</color>");
-
-        Texture2D targetTexture = new Texture2D(sourceTexture.width, sourceTexture.height, sourceTexture.format, false);
-        Color[] sourceColors = sourceTexture.GetPixels();
-        Color[] targetColors = targetTexture.GetPixels();
-        int sourceIndex = 0;
-        int targetIndex = 0;
-
-        // read from the bottom of source texture
-        for (int row = sourceTexture.height - 1; row > -1; row -= 1)
-        {
-            for (int rowPixel = 0; rowPixel < sourceTexture.width; rowPixel += 1)
-            {
-                sourceIndex = (row * sourceTexture.width) + rowPixel - 1;
-                // When we reach first index of row 0, change the -1 to 0
-                if (sourceIndex == -1) { sourceIndex = 0; }
-                targetColors[targetIndex] = sourceColors[sourceIndex];
-                targetIndex += 1;
-            }
-        }
-
-        targetTexture.SetPixels(targetColors);
-        targetTexture.Apply();
-        return targetTexture;
-    }
 
     void GenerateVuMarkBorderOutline(VuMarkBehaviour vumarkBehaviour)
     {

@@ -172,9 +172,9 @@ Prefab:
     - target: {fileID: 102000010767390410, guid: bfdc7f60d7205c84f82a4806a5352d60,
         type: 2}
       propertyPath: m_Text
-      value: "General Commands:\n\u2022 \"Reset Tracker\"\n\u2022 \"Show Menu\" or
-        Air-Tap\n\u2022 \"Close Menu\" or Air-Tap\n\u2022 \"Main Menu\" or Double
-        Air-Tap\n\u2022 \"Quit\" or Double Air-Tap from Main Menu"
+      value: "General Commands:\n\u2022 \"Reset\"\n\u2022 \"Show Menu\" or Air-Tap\n\u2022
+        \"Close Menu\" or Air-Tap\n\u2022 \"Main Menu\" or Double Air-Tap\n\u2022
+        \"Quit\" or Double Air-Tap from Main Menu"
       objectReference: {fileID: 0}
     - target: {fileID: 1000013198843976, guid: bfdc7f60d7205c84f82a4806a5352d60, type: 2}
       propertyPath: m_Name
@@ -717,7 +717,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 165.3, y: 62.2}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &314181797
 MonoBehaviour:
@@ -797,8 +797,6 @@ GameObject:
   m_Component:
   - component: {fileID: 428500839}
   - component: {fileID: 428500838}
-  - component: {fileID: 428500837}
-  - component: {fileID: 428500836}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: Untagged
@@ -806,20 +804,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &428500836
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 428500835}
-  m_Enabled: 1
---- !u!124 &428500837
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 428500835}
-  m_Enabled: 1
 --- !u!20 &428500838
 Camera:
   m_ObjectHideFlags: 0
@@ -7633,10 +7617,10 @@ RectTransform:
   m_Father: {fileID: 314181796}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83.15, y: -31.6}
-  m_SizeDelta: {x: 136.3, y: 43.2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1636416328
 MonoBehaviour:

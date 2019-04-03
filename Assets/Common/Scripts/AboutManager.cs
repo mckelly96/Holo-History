@@ -7,6 +7,7 @@ countries.
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AboutManager : MonoBehaviour
 {
@@ -77,7 +78,8 @@ public class AboutManager : MonoBehaviour
 
         Text[] textElements = GetComponentsInChildren<Text>();
         textElements[0].text = title;
-        textElements[1].text = description;
+        TextMeshProUGUI textMeshProUGUI = GetComponentInChildren<TextMeshProUGUI>();
+        textMeshProUGUI.text = description;
     }
 
 }

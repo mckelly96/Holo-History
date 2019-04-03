@@ -7,7 +7,7 @@ countries.
 using UnityEngine;
 using Vuforia;
 
-public class CloudErrorHandler : MonoBehaviour, ICloudRecoEventHandler
+public class CloudErrorHandler : MonoBehaviour, IObjectRecoEventHandler
 {
 
     #region PRIVATE_MEMBERS
@@ -16,32 +16,32 @@ public class CloudErrorHandler : MonoBehaviour, ICloudRecoEventHandler
     string errorMsg;
     CloudRecoBehaviour m_CloudRecoBehaviour;
     #endregion PRIVATE_MEMBERS
-    
-    
+
+
     #region MONOBEHAVIOUR_METHODS
-    void Start () 
+    void Start()
     {
-        if (VuforiaConfiguration.Instance.Vuforia.LicenseKey == string.Empty)
-        {
-            errorTitle = "Cloud Reco Init Error";
-            errorMsg = "Vuforia License Key not found. Cloud Reco requires a valid license.";
-            
-            MessageBox.DisplayMessageBox(errorTitle, errorMsg, false, null);
-        }
-        
         // Register this event handler with CloudRecoBehaviour
         m_CloudRecoBehaviour = FindObjectOfType<CloudRecoBehaviour>();
-        
+
         if (m_CloudRecoBehaviour)
         {
             m_CloudRecoBehaviour.RegisterEventHandler(this);
         }
+
+        if (VuforiaConfiguration.Instance.Vuforia.LicenseKey == string.Empty && m_CloudRecoBehaviour)
+        {
+            errorTitle = "Cloud Reco Init Error";
+            errorMsg = "Vuforia License Key not found. Cloud Reco requires a valid license.";
+
+            MessageBox.DisplayMessageBox(errorTitle, errorMsg, false, null);
+        }
     }
     #endregion MONOBEHAVIOUR_METHODS
-    
-    
+
+
     #region INTERFACE_IMPLEMENTATION_ICloudRecoEventHandler
-    
+
     /// <summary>
     /// Called if Cloud Reco initialization fails
     /// </summary>
@@ -66,7 +66,7 @@ public class CloudErrorHandler : MonoBehaviour, ICloudRecoEventHandler
         // Remove rich text tags for console logging
         var errorTextConsole = errorMsg.Replace("<color=red>", "").Replace("</color>", "");
 
-        Debug.LogError("Cloud Reco - Initialization Error: " + initError + "\n\n" + errorTextConsole);
+        Debug.LogError("OnInitError() - Initialization Error: " + initError + "\n\n" + errorTextConsole);
 
         MessageBox.DisplayMessageBox(errorTitle, errorMsg, true, CloseDialog);
     }
@@ -118,17 +118,17 @@ public class CloudErrorHandler : MonoBehaviour, ICloudRecoEventHandler
         // Remove rich text tags for console logging
         var errorTextConsole = errorMsg.Replace("<color=red>", "").Replace("</color>", "");
 
-        Debug.LogError("Cloud Reco - Update Error: " + updateError + "\n\n" + errorTextConsole);
+        Debug.LogError("OnUpdateError() - Update Error: " + updateError + "\n\n" + errorTextConsole);
 
         MessageBox.DisplayMessageBox(errorTitle, errorMsg, true, CloseDialog);
     }
 
     // These interface methods implemented in seperate ICloudRecoEventHandler class
-    public void OnInitialized() {}
-    public void OnInitialized(TargetFinder targetFinder) {}
-    public void OnStateChanged(bool scanning) {}
-    public void OnNewSearchResult(TargetFinder.TargetSearchResult targetSearchResult) {}
-    
+    public void OnInitialized() { }
+    public void OnInitialized(TargetFinder targetFinder) { }
+    public void OnStateChanged(bool scanning) { }
+    public void OnNewSearchResult(TargetFinder.TargetSearchResult targetSearchResult) { }
+
     #endregion INTERFACE_IMPLEMENTATION_ICloudRecoEventHandler
 
 
@@ -140,7 +140,7 @@ public class CloudErrorHandler : MonoBehaviour, ICloudRecoEventHandler
     }
 
     #endregion PUBLIC_METHODS
-    
+
 
     #region PRIVATE_METHODS
 

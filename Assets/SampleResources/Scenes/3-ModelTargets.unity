@@ -236,10 +236,9 @@ MonoBehaviour:
   mAspectRatioXY: 0.73306537
   mAspectRatioXZ: 0.8704593
   mShowBoundingBox: 0
-  mOverrideSnappingPose: 1
   mBBoxMin: {x: -0.076974, y: 0.000075, z: -0.054267}
   mBBoxMax: {x: 0.07328, y: 0.110221, z: 0.076523}
-  mPreviewImage: {fileID: 2800000, guid: 030b942b7542514662ec8582abb1c243, type: 3}
+  mPreviewImage: {fileID: 0}
   mLength: 0.150254
   mWidth: 0.110146
   mHeight: 0.13079
@@ -5507,9 +5506,9 @@ Prefab:
     - target: {fileID: 102000010767390410, guid: bfdc7f60d7205c84f82a4806a5352d60,
         type: 2}
       propertyPath: m_Text
-      value: "General Commands:\n\u2022 \"Reset Tracker\"\n\u2022 \"Show Menu\" or
-        Air-Tap\n\u2022 \"Close Menu\" or Air-Tap\n\u2022 \"Main Menu\" or Double
-        Air-Tap\n\u2022 \"Quit\" or Double Air-Tap from Main Menu"
+      value: "General Commands:\n\u2022 \"Reset\"\n\u2022 \"Show Menu\" or Air-Tap\n\u2022
+        \"Close Menu\" or Air-Tap\n\u2022 \"Main Menu\" or Double Air-Tap\n\u2022
+        \"Quit\" or Double Air-Tap from Main Menu"
       objectReference: {fileID: 0}
     - target: {fileID: 1000013198843976, guid: bfdc7f60d7205c84f82a4806a5352d60, type: 2}
       propertyPath: m_Name
@@ -5598,10 +5597,10 @@ RectTransform:
   m_Father: {fileID: 1803140966}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 83.15, y: -31.6}
-  m_SizeDelta: {x: 136.3, y: 43.2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922874051
 MonoBehaviour:
@@ -6312,8 +6311,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1317823780}
   - component: {fileID: 1317823779}
-  - component: {fileID: 1317823778}
-  - component: {fileID: 1317823777}
   m_Layer: 0
   m_Name: UICamera
   m_TagString: Untagged
@@ -6321,20 +6318,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1317823777
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317823776}
-  m_Enabled: 1
---- !u!124 &1317823778
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317823776}
-  m_Enabled: 1
 --- !u!20 &1317823779
 Camera:
   m_ObjectHideFlags: 0
@@ -6935,7 +6918,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -6948,7 +6931,7 @@ Camera:
     height: 1
   near clip plane: 0.05
   far clip plane: 5
-  field of view: 60
+  field of view: 30
   orthographic: 0
   orthographic size: 5
   m_Depth: 1
@@ -7128,7 +7111,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 165.3, y: 62.2}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1803140967
 MonoBehaviour:
